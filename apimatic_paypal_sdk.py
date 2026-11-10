@@ -15,6 +15,7 @@ import urllib.request
 import uuid
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 
@@ -75,6 +76,12 @@ class APIMaticPayPalClient:
         client_id: Optional[str] = None,
         client_secret: Optional[str] = None,
     ) -> None:
+        env_path = Path(__file__).resolve().parent / ".env"
+        if env_path.exists():
+            for line in env_path.read_text(encoding="utf-8").splitlines():
+                if "=" in line and not line.strip().startswith("#"):
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
         self.client_id = client_id or os.environ.get("PAYPAL_CLIENT_ID", "").strip()
         self.client_secret = client_secret or os.environ.get("PAYPAL_CLIENT_SECRET", "").strip()
         self._access_token: Optional[str] = None
