@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayGuard AI — Autonomous Agentic Commerce & Smart Milestone Escrow for PayPal</title>
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/dist/ag-grid-community.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/styles/ag-grid.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@31.3.2/styles/ag-theme-quartz.css" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #131b33;
+      --border: #25335a;
+      --accent: #0070ba;
+      --accent2: #00d4aa;
+      --text: #eef3ff;
+      --muted: #93a4c8;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding: 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 18px; }
+    .badge-row span { background: #1a2748; border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; font-size: 12px; margin-left: 6px; color: var(--accent2); }
+    .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 20px; }
+    .kpi-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    .kpi-card .label { font-size: 12px; color: var(--muted); text-transform: uppercase; }
+    .kpi-card .val { font-size: 24px; font-weight: 700; margin-top: 6px; color: #fff; }
+    .layout-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 18px; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    h2 { font-size: 15px; margin: 0 0 12px 0; color: #cfe0ff; display: flex; justify-content: space-between; align-items: center; }
+    button { background: var(--accent); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
+    button.capture-btn { background: #00a878; }
+    input, select { background: #0d1428; border: 1px solid var(--border); color: #fff; padding: 7px 10px; border-radius: 6px; width: 100%; margin-bottom: 8px; }
+    .bryntum-bar { background: #0d1428; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+    .progress-track { background: #1c294a; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+    .progress-fill { background: linear-gradient(90deg, #0070ba, #00d4aa); height: 100%; }
+    .telemetry-row { font-family: monospace; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #1d2949; color: #9ad1ff; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1 style="margin:0; font-size:22px;">🛡️ PayGuard AI — Autonomous Agentic Commerce & Milestone Escrow</h1>
+      <div style="font-size:13px; color:var(--muted); margin-top:4px;">
+        PayPal Orders v2 & Invoicing v2 + AI Deliverable Auditor + Multi-Sponsor Stack
+      </div>
+    </div>
+    <div class="badge-row">
+      <span>PayPal Sandbox v2</span>
+      <span>AG Grid Enterprise Ledger</span>
+      <span>Bryntum Milestone Scheduler</span>
+      <span>APIMatic Strict SDK</span>
+      <span>Channel3 AI Catalog</span>
+    </div>
+  </header>
+
+  <section class="kpi-grid">
+    <div class="kpi-card"><div class="label">Total PayPal Volume</div><div class="val" id="kpi-total">$0</div></div>
+    <div class="kpi-card"><div class="label">Captured (AI Verified)</div><div class="val" id="kpi-captured" style="color:#00d4aa;">$0</div></div>
+    <div class="kpi-card"><div class="label">Active Escrow Hold</div><div class="val" id="kpi-escrow" style="color:#ffbe3d;">$0</div></div>
+    <div class="kpi-card"><div class="label">Mean AI Fraud/SLA Risk</div><div class="val" id="kpi-risk">0.00</div></div>
+    <div class="kpi-card"><div class="label">APIMatic Verified Calls</div><div class="val" id="kpi-calls">0</div></div>
+  </section>
+
+  <section class="layout-grid">
+    <div class="panel">
+      <h2>
+        <span>📊 AG Grid Live PayPal Orders & AI Escrow Ledger</span>
+        <button class="capture-btn" onclick="captureSelectedOrder()">⚡ Run AI Audit & Capture Selected Order</button>
+      </h2>
+      <div id="myGrid" class="ag-theme-quartz-dark" style="height: 310px; width: 100%;"></div>
+    </div>
+
+    <div class="panel">
+      <h2>🤖 Channel3 AI Agentic Procurement -> PayPal Order v2</h2>
+      <label style="font-size:12px; color:var(--muted);">Select Channel3 Verified SKU</label>
+      <select id="sku-select" onchange="syncSkuPrice()"></select>
+      <input id="buyer-email" placeholder="Buyer Email (e.g. cfo@granbell.ae)" value="cfo@granbell.ae" />
+      <input id="order-desc" placeholder="Milestone Deliverable & SLA Specification" value="Autonomous AI RAG Deployment — P99 < 40ms" />
+      <input id="order-amount" type="number" step="50" value="4500" />
+      <button style="width:100%; margin-top:4px;" onclick="createPayPalOrder()">💳 Authorize PayPal v2 Escrow Order</button>
+      <div id="audit-status" style="margin-top:10px; font-size:12px; color:var(--accent2);"></div>
+    </div>
+  </section>
+
+  <section class="layout-grid">
+    <div class="panel">
+      <h2>📅 Bryntum Milestone & Escrow Release Timeline</h2>
+      <div id="bryntum-container"></div>
+    </div>
+    <div class="panel">
+      <h2>🔬 APIMatic Type-Safe SDK Telemetry (`PayPal-Request-Id`)</h2>
+      <div id="telemetry-container"></div>
+    </div>
+  </section>
+
+  <script>
+    let gridApi = null;
+    let catalogItems = [];
+
+    const columnDefs = [
+      { field: "order_id", headerName: "PayPal Order ID", width: 165, checkboxSelection: true },
+      { field: "status", headerName: "Escrow Status", width: 130 },
+      { field: "amount_usd", headerName: "Amount (USD)", width: 130, valueFormatter: p => "$" + Number(p.value).toLocaleString() },
+      { field: "merchant_name", headerName: "Merchant", width: 180 },
+      { field: "channel3_sku", headerName: "Channel3 SKU", width: 140 },
+      { field: "ai_risk_score", headerName: "AI Risk", width: 100 },
+      { field: "ai_audit_verdict", headerName: "AI Deliverable Verdict", flex: 1 },
+    ];
+
+    const gridOptions = {
+      columnDefs,
+      rowSelection: "single",
+      animateRows: true,
+      defaultColDef: { sortable: true, filter: true, resizable: true }
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const gridDiv = document.querySelector("#myGrid");
+      gridApi = agGrid.createGrid(gridDiv, gridOptions);
+      refreshState();
+    });
+
+    async function refreshState() {
+      const res = await fetch("/api/state");
+      const data = await res.json();
+      document.getElementById("kpi-total").textContent = "$" + data.kpis.total_volume_usd.toLocaleString();
+      document.getElementById("kpi-captured").textContent = "$" + data.kpis.captured_volume_usd.toLocaleString();
+      document.getElementById("kpi-escrow").textContent = "$" + data.kpis.active_escrow_usd.toLocaleString();
+      document.getElementById("kpi-risk").textContent = data.kpis.average_ai_risk_score;
+      document.getElementById("kpi-calls").textContent = data.kpis.apimatic_calls_logged;
+
+      gridApi.setGridOption("rowData", data.ag_grid_rows);
+      catalogItems = data.channel3_catalog;
+      const sel = document.getElementById("sku-select");
+      if (sel.options.length === 0) {
+        catalogItems.forEach(item => {
+          const opt = document.createElement("option");
+          opt.value = item.sku;
+          opt.textContent = `${item.sku} — ${item.title} ($${item.unit_price_usd})`;
+          sel.appendChild(opt);
+        });
+      }
+
+      const bCont = document.getElementById("bryntum-container");
+      bCont.innerHTML = data.bryntum_tasks.map(t => `
+        <div class="bryntum-bar">
+          <div style="display:flex; justify-content:space-between; font-size:13px;">
+            <strong>${t.name}</strong>
+            <span>$${t.amountUsd.toLocaleString()} • ${t.escrowStatus} (${t.percentDone}%)</span>
+          </div>
+          <div style="font-size:11px; color:var(--muted);">Window: ${t.startDate} → ${t.endDate}</div>
+          <div class="progress-track"><div class="progress-fill" style="width:${t.percentDone}%"></div></div>
+        </div>
+      `).join("");
+
+      const tCont = document.getElementById("telemetry-container");
+      tCont.innerHTML = data.apimatic_telemetry.slice(0, 6).map(t => `
+        <div class="telemetry-row">
+          [${t.status_code}] ${t.method} ${t.endpoint} (${t.latency_ms}ms) • ${t.mode}
+        </div>
+      `).join("");
+    }
+
+    function syncSkuPrice() {
+      const sku = document.getElementById("sku-select").value;
+      const item = catalogItems.find(i => i.sku === sku);
+      if (item) {
+        document.getElementById("order-amount").value = item.unit_price_usd;
+        document.getElementById("order-desc").value = item.title;
+      }
+    }
+
+    async function createPayPalOrder() {
+      const sku = document.getElementById("sku-select").value;
+      const item = catalogItems.find(i => i.sku === sku) || {};
+      const res = await fetch("/api/orders/create", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          buyer_email: document.getElementById("buyer-email").value,
+          merchant_name: item.merchant_name || "CloudCore AI Systems",
+          description: document.getElementById("order-desc").value,
+          amount_usd: Number(document.getElementById("order-amount").value),
+          intent: "AUTHORIZE",
+          channel3_sku: sku
+        })
+      });
+      const out = await res.json();
+      if (out.ok) {
+        document.getElementById("audit-status").textContent = `✅ Created PayPal Order ${out.order.order_id} (SHA-256: ${out.order.sha256_receipt.slice(0, 14)}...)`;
+        refreshState();
+      }
+    }
+
+    async function captureSelectedOrder() {
+      const rows = gridApi.getSelectedRows();
+      const target = rows[0] || gridApi.getDisplayedRowAtIndex(0)?.data;
+      if (!target) return;
+      const res = await fetch("/api/orders/capture", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          order_id: target.order_id,
+          deliverable_evidence: "Automated CI/CD test suite 100% pass, SLA p99 < 25ms verified, cryptographic SHA256 receipt signed."
+        })
+      });
+      const out = await res.json();
+      if (out.ok) {
+        document.getElementById("audit-status").textContent = `🎉 Captured $${out.audit_report.captured_amount_usd} on ${out.order.order_id} — ${out.audit_report.verdict}`;
+        refreshState();
+      }
+    }
+  </script>
+</body>
+</html>
